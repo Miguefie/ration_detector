@@ -28,3 +28,10 @@
 /Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Pipelines.Sockets.Unofficial.dll
 /Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/StackExchange.Redis.dll
 /Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/obj/Debug/net7.0/RationDetectorAPI.csproj.CopyComplete
+/Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Microsoft.Bcl.AsyncInterfaces.dll
+/Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Newtonsoft.Json.dll
+/Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Redis.OM.dll
+/Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Ulid.dll
+/Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Microsoft.AspNetCore.JsonPatch.dll
+/Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+/Users/fialho/Documents/Projects/ration_detector/RationDetectorAPI/RationDetectorAPI/bin/Debug/net7.0/Newtonsoft.Json.Bson.dll
