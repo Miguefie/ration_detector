@@ -1,5 +1,12 @@
 import RPi.GPIO as GPIO
 import time
+import requests
+import datetime
+import json
+
+
+URL = "http://localhost:5217/ration/silo"
+
 GPIO.setmode(GPIO.BCM)
 
 TRIG = 24
@@ -31,6 +38,24 @@ try:
         distance = round(distance,2)
 
         print "Distance: ",distance,"m"
+
+
+        now = datetime.datetime.now()
+
+        data = {'Distance': distance,
+                'CreationDate': ''+now.strftime("%m/%d/%Y, %H:%M:%S")}
+
+        print data
+        
+        dataJson = json.dumps(data)
+
+        print dataJson
+
+        x = requests.post(url=URL, data=dataJson, headers={"Content-Type":"application/json"})
+
+        print(x.text)
+
+        
         
 except KeyboardInterrupt:
     pass

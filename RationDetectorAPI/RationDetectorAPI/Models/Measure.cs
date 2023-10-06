@@ -2,7 +2,7 @@ using Redis.OM.Modeling;
 
 namespace RationDetectorAPI.Models;
 
-[Document(Prefixes = new [] {"Measure"})]
+[Document(StorageType = StorageType.Hash,Prefixes = new [] {"Measure"})]
 public class Measure
 {
     [Indexed]
