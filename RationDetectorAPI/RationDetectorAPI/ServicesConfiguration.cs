@@ -28,6 +28,9 @@ public static class ServicesConfiguration
                                      ?? throw new ArgumentNullException("Silo Name was not provided!");
 
         services.AddSingleton<Silo>(silo);
+
+
+        services.AddHostedService<IndexCreationService>();
         
 
         return services;

@@ -1,3 +1,5 @@
 *.code-workspace
 RationDetectorAPI/RationDetectorAPI/bin
 RationDetectorAPI/RationDetectorAPI/obj
+error.log
+initTime.txt

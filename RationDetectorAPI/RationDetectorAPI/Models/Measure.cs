@@ -2,7 +2,7 @@ using Redis.OM.Modeling;
 
 namespace RationDetectorAPI.Models;
 
-[Document(StorageType = StorageType.Hash,Prefixes = new [] {"Measure"})]
+[Document(StorageType = StorageType.Hash, Prefixes = new [] {"Measure"} )]
 public class Measure
 {
     [Indexed]
@@ -12,5 +12,5 @@ public class Measure
     [Indexed]
     public decimal Distance { get; set; }
     [Indexed]
-    public DateTime CreationDate { get; set; }
+    public string CreationDate { get; set; }
 }
