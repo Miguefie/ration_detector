@@ -16,8 +16,13 @@ public static class ServicesConfiguration
         
         var multiplexer = ConnectionMultiplexer.Connect(redisConnection);
         
+        var endpoint = multiplexer.GetEndPoints()[0];
+        var server = multiplexer.GetServer(endpoint);
+        
         services.AddSingleton(new RedisConnectionProvider(multiplexer));
-     
+        services.AddSingleton(multiplexer.GetDatabase());
+        services.AddSingleton(server);
+             
         
         //Creation Of Silo (Init of Application)
         Silo silo = new Silo();
@@ -30,7 +35,7 @@ public static class ServicesConfiguration
         services.AddSingleton<Silo>(silo);
 
 
-        services.AddHostedService<IndexCreationService>();
+        //services.AddHostedService<IndexCreationService>();
         
 
         return services;

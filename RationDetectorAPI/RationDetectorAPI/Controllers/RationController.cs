@@ -1,5 +1,7 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NRedisStack;
 using RationDetectorAPI.DTOs;
 using RationDetectorAPI.Models;
 using Redis.OM;
@@ -14,20 +16,78 @@ public class RationController : ControllerBase
 {
     private readonly Silo _silo;
     private readonly RedisCollection<Measure> _measures;
+    private readonly IDatabase _db;
+    private readonly IServer _server;
 
     
-    public RationController(Silo silo, RedisConnectionProvider provider)
+    public RationController(Silo silo, RedisConnectionProvider provider, IDatabase db, IServer server)
     {
         _silo = silo;
         _measures = (RedisCollection<Measure>)provider.RedisCollection<Measure>();
+        _db = db;
+        _server = server;
     }
 
     [AllowAnonymous]
     [HttpGet]
-    [Route("silo")]
-    public ActionResult<Silo> GetSiloData()
+    [Route("measures")]
+    public async Task<ActionResult<List<Measure>>> GetSiloData()
     {
-        return Ok("TESTE");
+        var redisResult = _server.Keys(pattern:"*");
+
+        var measures = new List<Measure>();   
+        
+        foreach (var key in redisResult)
+        {
+            var measure = new Measure();
+            
+            // Check if the key type is a hash
+            if (_db.KeyType(key) == RedisType.Hash)
+            {
+                // Use HGETALL to get all fields and values for the hash key
+                var hashEntries = await _db.HashGetAllAsync(key);
+                
+                foreach (var hash in hashEntries)
+                {
+                    switch (hash.Name)
+                    {
+                        case "Identifier":
+                            measure.Identifier = Guid.Parse(hash.Value.ToString());
+                            break;
+                        case "SiloIdentifier":
+                            measure.SiloIdentifier = Guid.Parse(hash.Value.ToString());
+                            break;
+                        case "Distance":
+                            measure.Distance = Decimal.Parse(hash.Value.ToString(), CultureInfo.InvariantCulture);
+                            break;
+                        case "CreationDate":
+                            measure.CreationDate = hash.Value.ToString();
+                            break;
+                    }
+                }
+            }
+            
+            measures.Add(measure);
+        }
+        
+        return Ok(measures);
+    }
+    
+    [AllowAnonymous]
+    [HttpDelete]
+    [Route("measures")]
+    public ActionResult<Silo> DeleteSiloData()
+    {
+        try
+        {
+            _db.Execute("FLUSHDB");
+            return Ok(true);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest(e);
+        }
     }
 
     [AllowAnonymous]

@@ -51,33 +51,58 @@ logger = logging.getLogger('ration_sensor')
 logger.addHandler(logHandler)
 
 while True:
+
+    # Gets Current Start Time
+    start_time = time.time()
+
+    # List of all Measures in the 5 Minutes
+    measures = []
+
+    # Makes Measure in the 5 Minutes (1 Measure per 30 Seconds) (30)
+    while time.time() - start_time < (5 * 60):   
+        try:
+            GPIO.output(TRIG,True)
+            time.sleep(0.00001)
+            GPIO.output(TRIG,False)
+
+            while GPIO.input(ECHO)==0:
+                pulse_start = time.time()
+                
+            while GPIO.input(ECHO)==1:
+                pulse_end = time.time()
+                
+            pulse_duration = pulse_end - pulse_start
+
+            distance = pulse_duration * 171.50
+
+            distance = round(distance,2)
+
+            print ("Distance: ",distance,"m")
+
+            measures.append(distance)
+
+        except Exception as e:
+            logger.error(e)
+        
+        GPIO.output(TRIG,False)
+
+        # Waits 30 Seconds
+        time.sleep(30)
+    
+    # Send Data
     try:
-        GPIO.output(TRIG,False)
-        time.sleep(5 * 60)
-
-        GPIO.output(TRIG,True)
-        time.sleep(0.00001)
-        GPIO.output(TRIG,False)
-
-
-        while GPIO.input(ECHO)==0:
-            pulse_start = time.time()
-            
-        while GPIO.input(ECHO)==1:
-            pulse_end = time.time()
-            
-        pulse_duration = pulse_end - pulse_start
-
-        distance = pulse_duration * 171.50
-
-        distance = round(distance,2)
-
-        print ("Distance: ",distance,"m")
-
+        # Machine time
         machineCurrentTime = datetime.datetime.now() - initTime
 
-        data = {'Distance': distance,
-                'CreationDate': ''+str(machineCurrentTime)}
+        hours, remainder = divmod(machineCurrentTime.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        # Average of measures
+        average = sum(measures) / len(measures)
+        averageDistance = round(average, 2)
+
+        data = {'Distance': averageDistance,
+                'CreationDate': "%i-%i:%i:%i"%(machineCurrentTime.days,hours,minutes,seconds)}
 
         print (data)
         
@@ -87,6 +112,12 @@ while True:
         x = requests.post(url=URL, data=dataJson, headers={"Content-Type":"application/json"})
 
         print(x.text)
-
+        
     except Exception as e:
         logger.error(e)
+
+
+    GPIO.output(TRIG,False)
+
+    # Wait 30 Minutes
+    time.sleep(30 * 60)
